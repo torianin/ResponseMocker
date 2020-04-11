@@ -3,7 +3,7 @@ import Vapor
 
 struct MockedResponseController {
     func index(req: Request) throws -> EventLoopFuture<[MockedResponse]> {
-      return MockedResponse.query(on: req.db).all()
+        return MockedResponse.query(on: req.db).sort(\.$createdAt, .descending).all()
     }
 
     func create(req: Request) throws -> EventLoopFuture<MockedResponse> {

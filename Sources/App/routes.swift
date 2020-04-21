@@ -24,8 +24,14 @@ func routes(_ app: Application) throws {
 func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {
     req.logger.info("\(req.url.string)")
     return MockedResponse.query(on: req.db)
-        .filter(\.$path ~~ req.url.string)
-        .first()
+        .all()
+        .map({ mockedResponses -> MockedResponse? in
+            let filteredMockedResponses = mockedResponses.filter { mockedResponse -> Bool in
+                let predicate = NSPredicate(format: "self LIKE %@", mockedResponse.path)
+                return !NSArray(object: req.url.string).filtered(using: predicate).isEmpty
+            }
+            return filteredMockedResponses.first
+        })
         .unwrap(or: Abort(.notFound))
         .map { $0.content }
 }

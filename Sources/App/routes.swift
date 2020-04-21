@@ -11,6 +11,10 @@ func routes(_ app: Application) throws {
     app.get("*", "*", use: getMockedResponseWithPath)
     app.get("*", "*", "*", use: getMockedResponseWithPath)
     app.get("*", "*", "*", "*", use: getMockedResponseWithPath)
+    app.get("*", "*", "*", "*", "*", use: getMockedResponseWithPath)
+    app.get("*", "*", "*", "*", "*", "*", use: getMockedResponseWithPath)
+    app.get("*", "*", "*", "*", "*", "*", "*", use: getMockedResponseWithPath)
+    app.get("*", "*", "*", "*", "*", "*", "*", "*", use: getMockedResponseWithPath)
 
     let responseController = MockedResponseController()
     app.get("responses", use: responseController.index)

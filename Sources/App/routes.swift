@@ -27,8 +27,7 @@ func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {
         .all()
         .map({ mockedResponses -> MockedResponse? in
             let filteredMockedResponses = mockedResponses.filter { mockedResponse -> Bool in
-                let predicate = NSPredicate(format: "self LIKE %@", mockedResponse.path)
-                return !NSArray(object: req.url.string).filtered(using: predicate).isEmpty
+                return req.url.string.matches(path: mockedResponse.path)
             }
             return filteredMockedResponses.first
         })

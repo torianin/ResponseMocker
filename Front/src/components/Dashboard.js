@@ -1,5 +1,7 @@
 import React from "react";
-import Response from "./Response"
+import ResponsesList from "./ResponsesList"
+import { connect } from 'react-redux';
+import { fetchResponses } from '../actions';
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -8,7 +10,7 @@ class Dashboard extends React.Component {
     }
 
     componentDidMount() {
-        this.requestResponces()
+        this.props.fetchResponses();
     }
 
     async createResponce() {
@@ -20,26 +22,10 @@ class Dashboard extends React.Component {
                 content: this.state.content
             })
         };
-        fetch('/responses', requestOptions)
+        fetch('http://127.0.0.1:8080/responses', requestOptions)
         .then(
             result => {
-                this.requestResponces()
-            },
-            error => {
-                console.log(error);
-            }
-        );
-    }
-
-    async requestResponces() {
-        let url = "/responses"
-        fetch(url)
-        .then(res => res.json())
-        .then(
-            result => {
-                let responses = result
-                console.log(responses)
-                this.setState({responses: responses})
+                this.props.fetchResponses();
             },
             error => {
                 console.log(error);
@@ -77,20 +63,15 @@ class Dashboard extends React.Component {
                             Submit
                         </button>
                     </form>
-                    {!this.state.responses.length ? (
-                            <div className="row p-3">
-                                <h3>No responses</h3>
-                            </div>
-                        ) : (
-                            this.state.responses.map(response => {
-                                return <Response key={response.id} path={response.path} content={response.content} />;
-                            })
-                        )
-                    }
+                    <ResponsesList />
                 </div>
             </div>
         )
     }
 }
 
-export default Dashboard;
+const mapStateToProps = (state) => {
+    return { responses: state.responses };
+};
+
+export default connect(mapStateToProps, { fetchResponses })(Dashboard);

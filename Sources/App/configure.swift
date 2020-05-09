@@ -19,14 +19,23 @@ public func configure(_ app: Application) throws {
 
     // register routes
     try routes(app)
+
+    setupHostnameAndPort(app)
+    try setupTlsConfiguration(app)
+}
+
+private func setupHostnameAndPort(_ app: Application) {
+    guard let hostname = Environment.get("HOSTNAME"),
+        let port = Int(Environment.get("PORT") ?? "") else { return }
     
+    app.server.configuration.hostname = hostname
+    app.server.configuration.port = port
+}
+
+private func setupTlsConfiguration(_ app: Application) throws {
     guard let certPath = Environment.get("CERT_PATH"),
-        let keyPath = Environment.get("KEY_PATH") else {
-            return
-    }
-
-    app.server.configuration.supportVersions = [.two]
-
+        let keyPath = Environment.get("KEY_PATH") else { return }
+    
     try app.server.configuration.tlsConfiguration = .forServer(
         certificateChain: [
             .certificate(.init(

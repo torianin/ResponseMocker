@@ -11,10 +11,13 @@ struct MockedResponseController {
         return response.save(on: req.db).map { response }
     }
 
-//    func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
-//         return Response.find(req.parameters.get("todoID"), on: req.db)
-//             .unwrap(or: Abort(.notFound))
-//             .flatMap { $0.delete(on: req.db) }
-//             .transform(to: .ok)
-//     }
+    func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+        guard let id = req.parameters.get("id", as: UUID.self) else {
+            throw Abort(.badRequest)
+        }
+        return MockedResponse.find(id, on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMap { $0.delete(on: req.db) }
+            .transform(to: .ok)
+     }
 }

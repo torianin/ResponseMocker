@@ -7,18 +7,12 @@ func routes(_ app: Application) throws {
         req.view.render("index")
     }
 
-    app.get("*", use: getMockedResponseWithPath)
-    app.get("*", "*", use: getMockedResponseWithPath)
-    app.get("*", "*", "*", use: getMockedResponseWithPath)
-    app.get("*", "*", "*", "*", use: getMockedResponseWithPath)
-    app.get("*", "*", "*", "*", "*", use: getMockedResponseWithPath)
-    app.get("*", "*", "*", "*", "*", "*", use: getMockedResponseWithPath)
-    app.get("*", "*", "*", "*", "*", "*", "*", use: getMockedResponseWithPath)
-    app.get("*", "*", "*", "*", "*", "*", "*", "*", use: getMockedResponseWithPath)
-
+    app.get("**", use: getMockedResponseWithPath)
+    
     let responseController = MockedResponseController()
     app.get("responses", use: responseController.index)
     app.post("responses", use: responseController.create)
+    app.delete("responses", ":id", use: responseController.delete)
 }
 
 func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {

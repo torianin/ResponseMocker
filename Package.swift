@@ -21,7 +21,7 @@ let package = Package(
             .product(name: "Vapor", package: "vapor"),
             .product(name: "Leaf", package: "leaf")
         ]),
-        .target(name: "Run", dependencies: ["App"]),
+        .target(name: "ResponseMocker", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: [
             .target(name: "App"),
             .product(name: "XCTVapor", package: "vapor"),

@@ -13,6 +13,11 @@ func routes(_ app: Application) throws {
     app.get("responses", use: responseController.index)
     app.post("responses", use: responseController.create)
     app.delete("responses", ":id", use: responseController.delete)
+    
+    let passwordProtected = app.grouped(User.authenticator())
+    passwordProtected.post("login") { req -> User in
+        try req.auth.require(User.self)
+    }
 }
 
 func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {

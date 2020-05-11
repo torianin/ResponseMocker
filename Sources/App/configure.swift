@@ -12,7 +12,7 @@ public func configure(_ app: Application) throws {
     app.middleware.use(CORSMiddleware(configuration: .default()))
 
     app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
-    app.migrations.add(CreateMockedResponse())
+    setupMigrations(app)
 
     app.views.use(.leaf)
     app.leaf.cache.isEnabled = false
@@ -24,19 +24,25 @@ public func configure(_ app: Application) throws {
     try setupTlsConfiguration(app)
 }
 
+private func setupMigrations(_ app: Application) {
+    app.migrations.add(CreateMockedResponse())
+    app.migrations.add(CreateUser())
+    app.migrations.add(SeedUser())
+}
+
 private func setupHostnameAndPort(_ app: Application) {
     guard let hostname = Environment.get("HOSTNAME"),
         let port = Int(Environment.get("PORT") ?? "") else { return }
     
-    app.server.configuration.hostname = hostname
-    app.server.configuration.port = port
+    app.http.server.configuration.hostname = hostname
+    app.http.server.configuration.port = port
 }
 
 private func setupTlsConfiguration(_ app: Application) throws {
     guard let certPath = Environment.get("CERT_PATH"),
         let keyPath = Environment.get("KEY_PATH") else { return }
     
-    try app.server.configuration.tlsConfiguration = .forServer(
+    try app.http.server.configuration.tlsConfiguration = .forServer(
         certificateChain: [
             .certificate(.init(
                 file: certPath,

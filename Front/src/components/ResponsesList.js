@@ -22,6 +22,7 @@ class ResponsesList extends React.Component {
             <th scope="col"></th>
           </tr>
         </thead>
+         
         <tbody>
           {this.props.responses.map((response) => {
             return <Response key={response.id} id={response.id} />;
@@ -37,7 +38,7 @@ class ResponsesList extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { responses: state.responses };
+  return { responses: Object.values(state.responses) };
 };
 
 export default connect(mapStateToProps, { fetchResponses })(ResponsesList);

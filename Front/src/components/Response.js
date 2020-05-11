@@ -1,21 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchResponses } from '../actions';
+import { fetchResponses, deleteResponse } from '../actions';
 
 class Response extends React.Component {
-  render() {
-    const { response } = this.props;
+  handleClick = (id) => {
+    this.props.deleteResponse(this.props.response.id);
+  };
 
+  render() {
     return (
       <tr>
         <td className="text-truncate" style={{ maxWidth: '300px' }}>
-          {response.path}
+          {this.props.response.path}
         </td>
         <td className="text-truncate" style={{ maxWidth: '500px' }}>
-          {response.content}
+          {this.props.response.content}
         </td>
         <td>
-          <button type="button" className="btn btn-danger">
+          <button
+            onClick={this.handleClick}
+            type="button"
+            className="btn btn-danger"
+          >
             Remove
           </button>
         </td>
@@ -26,8 +32,10 @@ class Response extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    response: state.responses.find((response) => response.id === ownProps.id),
+    response: state.responses[ownProps.id],
   };
 };
 
-export default connect(mapStateToProps, { fetchResponses })(Response);
+export default connect(mapStateToProps, { fetchResponses, deleteResponse })(
+  Response
+);

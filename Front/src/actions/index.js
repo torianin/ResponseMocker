@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: process.env.BASE_URL,
@@ -21,11 +21,38 @@ export const fetchResponses = () => async (dispatch) => {
   });
 };
 
-export const removeResponse = (id) => async (dispatch) => {
-  const response = await axiosInstance.delete('/responses/${id}');
+export const fetchResponse = (id) => async (dispatch) => {
+  const response = await axiosInstance.get(`/responses/${id}`);
 
   dispatch({
-    type: 'REMOVE_RESPONSE',
+    type: 'FETCH_RESPONSE',
     payload: response.data,
+  });
+};
+
+export const createResponse = (formValues) => async (dispatch) => {
+  const response = await axiosInstance.post('/responses', formValues);
+
+  dispatch({
+    type: 'CREATE_RESPONSE',
+    payload: response.data,
+  });
+};
+
+export const editResponse = (id, formValues) => async (dispatch) => {
+  const response = await axiosInstance.put(`/responses/${id}`, formValues);
+
+  dispatch({
+    type: 'EDIT_RESPONSE',
+    payload: response.data,
+  });
+};
+
+export const deleteResponse = (id) => async (dispatch) => {
+  await axiosInstance.delete(`/responses/${id}`);
+
+  dispatch({
+    type: 'DELETE_RESPONSE',
+    payload: id,
   });
 };

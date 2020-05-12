@@ -7,16 +7,27 @@ func routes(_ app: Application) throws {
         req.view.render("index")
     }
 
-    app.get("**", use: getMockedResponseWithPath)
+    let passwordProtected = app.grouped(User.authenticator())
+    passwordProtected.post("login") { req -> EventLoopFuture<UserToken> in
+        let user = try req.auth.require(User.self)
+        let token = try user.generateToken()
+           return token.save(on: req.db)
+               .map { token }
+    }
+    
+    let tokenProtected = app.grouped(UserToken.authenticator())
+                            .grouped(User.guardMiddleware())
+
+    tokenProtected.get("**", use: getMockedResponseWithPath)
     
     let responseController = MockedResponseController()
-    app.get("responses", use: responseController.index)
-    app.post("responses", use: responseController.create)
-    app.delete("responses", ":id", use: responseController.delete)
-    
-    let passwordProtected = app.grouped(User.authenticator())
-    passwordProtected.post("login") { req -> User in
-        try req.auth.require(User.self)
+    tokenProtected.get("responses", use: responseController.index)
+    tokenProtected.post("responses", use: responseController.create)
+    tokenProtected.delete("responses", ":id", use: responseController.delete)
+        
+    tokenProtected.get("config") { req -> String in
+        let user = try req.auth.require(User.self)
+        return user.name
     }
 }
 

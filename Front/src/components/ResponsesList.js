@@ -1,6 +1,7 @@
 import React from 'react';
-import Response from './Response';
 import { connect } from 'react-redux';
+import { _ } from 'lodash';
+import Response from './Response';
 import { fetchResponses } from '../actions';
 
 class ResponsesList extends React.Component {
@@ -22,7 +23,7 @@ class ResponsesList extends React.Component {
             <th scope="col"></th>
           </tr>
         </thead>
-         
+
         <tbody>
           {this.props.responses.map((response) => {
             return <Response key={response.id} id={response.id} />;
@@ -38,7 +39,14 @@ class ResponsesList extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { responses: Object.values(state.responses) };
+  const responsesList = Object.values(state.responses);
+  return {
+    responses: _.orderBy(
+      responsesList,
+      [(response) => response.createdAt],
+      ['desc']
+    ),
+  };
 };
 
 export default connect(mapStateToProps, { fetchResponses })(ResponsesList);

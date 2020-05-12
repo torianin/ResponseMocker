@@ -15,7 +15,7 @@ class Login extends React.Component {
     }
   }
 
-  renderInput = ({ input, label, meta }) => {
+  renderInput = ({ input, label, meta, type }) => {
     return (
       <div>
         <label htmlFor="content">{label}</label>

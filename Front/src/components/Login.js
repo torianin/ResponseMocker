@@ -19,7 +19,7 @@ class Login extends React.Component {
     return (
       <div>
         <label htmlFor="content">{label}</label>
-        <input className="form-control" type="password" {...input} />
+        <input className="form-control" type={type} {...input} />
         {this.renderError(meta)}
       </div>
     );
@@ -45,11 +45,13 @@ class Login extends React.Component {
                   name="login"
                   component={this.renderInput}
                   label="Login"
+                  type="text"
                 />
                 <Field
                   name="password"
                   component={this.renderInput}
                   label="Password"
+                  type="password"
                 />
               </div>
             </div>

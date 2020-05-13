@@ -7,8 +7,13 @@ import Leaf
 public func configure(_ app: Application) throws {
 
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.viewsDirectory))
-    app.middleware.use(CORSMiddleware(configuration: .default()))
-
+    
+    app.middleware.use(CORSMiddleware(configuration: .init(
+        allowedOrigin: .all,
+        allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE, .PATCH],
+        allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin]
+    )))
+    
     app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
     setupMigrations(app)
 

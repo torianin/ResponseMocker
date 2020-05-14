@@ -10,7 +10,7 @@ final class DateRenderer {
             let dateFormat = template.split(separator: "\"")[1]
 
             let dateFormatter = DateFormatter()
-            dateFormatter.timeZone = TimeZone(identifier: "UTC+02")
+            dateFormatter.timeZone = TimeZone(identifier: "UTC")
             dateFormatter.dateFormat = String(dateFormat)
             let dateString = dateFormatter.string(from: Date().addingTimeInterval(timeInterval))
             

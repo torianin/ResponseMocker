@@ -42,5 +42,5 @@ func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {
             return filteredMockedResponses.first
         })
         .unwrap(or: Abort(.notFound))
-        .map { $0.content }
+        .map { DateRenderer.render(content: $0.content) }
 }

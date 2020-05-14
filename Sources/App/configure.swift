@@ -6,13 +6,20 @@ import Leaf
 // configures your application
 public func configure(_ app: Application) throws {
 
-    app.middleware.use(FileMiddleware(publicDirectory: app.directory.viewsDirectory))
+    let fileMiddleware = FileMiddleware(publicDirectory: app.directory.viewsDirectory)
     
-    app.middleware.use(CORSMiddleware(configuration: .init(
+    let corsMiddleware = CORSMiddleware(configuration: .init(
         allowedOrigin: .all,
         allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE, .PATCH],
         allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin]
-    )))
+    ))
+    
+    let errorMiddleware = ErrorMiddleware.default(environment: app.environment)
+
+    app.middleware = .init()
+    app.middleware.use(corsMiddleware)
+    app.middleware.use(errorMiddleware)
+    app.middleware.use(fileMiddleware)
     
     app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
     setupMigrations(app)

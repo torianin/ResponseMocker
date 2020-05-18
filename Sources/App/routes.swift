@@ -32,6 +32,7 @@ func routes(_ app: Application) throws {
 }
 
 func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {
+    let dateRenderer = DateRenderer()
     req.logger.info("\(req.url.string)")
     return MockedResponse.query(on: req.db)
         .all()
@@ -42,5 +43,5 @@ func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {
             return filteredMockedResponses.first
         })
         .unwrap(or: Abort(.notFound))
-        .map { DateRenderer.render(content: $0.content) }
+        .map { dateRenderer.render(content: $0.content) }
 }

@@ -1,8 +1,9 @@
 import Foundation
 
-// Source: https://stackoverflow.com/a/57272276/1819496
-
 extension String {
+
+    // Source: https://stackoverflow.com/a/57272276/1819496
+
     func matches(path pattern: String) -> Bool {
         var strIndex = self.startIndex, matchIndex = self.startIndex
         var patternIndex = pattern.startIndex, asteriskIndex = pattern.endIndex
@@ -35,4 +36,18 @@ extension String {
 
         return patternIndex == pattern.endIndex
     }
+    
+    // Source: https://stackoverflow.com/questions/36865443/get-all-ranges-of-a-substring-in-a-string-in-swift
+    
+    func ranges(of substring: String, options: CompareOptions = [], locale: Locale? = nil) -> [Range<Index>] {
+         var ranges: [Range<Index>] = []
+        while ranges.last.map({ $0.upperBound < endIndex }) ?? true,
+             let range = range(of: substring,
+                               options: options,
+                               range: (ranges.last?.upperBound ?? startIndex) ..< endIndex,
+                               locale: locale) {
+             ranges.append(range)
+         }
+         return ranges
+     }
 }

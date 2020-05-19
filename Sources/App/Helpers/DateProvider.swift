@@ -8,7 +8,6 @@
 import Foundation
 
 class DateProvider: DateProviderType {
-    
     func currentDate() -> Date {
        Date()
     }

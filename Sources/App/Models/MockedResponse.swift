@@ -13,17 +13,39 @@ final class MockedResponse: Model, Content {
     @Field(key: "content")
     var content: String
 
+    @Field(key: "is_active")
+    var isActive: Bool
+    
+    @Field(key: "replace_dates")
+    var replaceDates: Bool
+    
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
 
     @Timestamp(key: "updated_at", on: .update)
     var updatedAt: Date?
 
-    init() { }
+    @Siblings(through: MockedResponseCollection.self, from: \.$mockedResponse, to: \.$collection)
+    var collections: [Collection]
+    
+    init() {}
 
-    init(id: UUID? = nil, path: String, content: String) {
+    init(id: UUID? = nil,
+         path: String,
+         content: String,
+         isActive: Bool = true,
+         replaceDates: Bool = false) {
         self.id = id
         self.path = path
         self.content = content
+        self.isActive = isActive
+        self.replaceDates = replaceDates
+    }
+}
+
+extension MockedResponse {
+    struct Create: Content {
+        var path: String
+        var content: String
     }
 }

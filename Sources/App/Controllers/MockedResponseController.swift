@@ -7,7 +7,11 @@ struct MockedResponseController {
     }
 
     func create(req: Request) throws -> EventLoopFuture<MockedResponse> {
-        let response = try req.content.decode(MockedResponse.self)
+        let createRequest = try req.content.decode(MockedResponse.Create.self)
+        let response = MockedResponse(
+            path: createRequest.path,
+            content: createRequest.content
+        )
         return response.save(on: req.db).map { response }
     }
 
@@ -20,4 +24,14 @@ struct MockedResponseController {
             .flatMap { $0.delete(on: req.db) }
             .transform(to: .ok)
      }
+    
+    func updateTag(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+        let mockedResponse = MockedResponse.find(req.parameters.get("responseID"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+        let collection = Collection.find(req.parameters.get("collectionID"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+        return mockedResponse.and(collection).flatMap { (mockedResponse, collection) in
+            mockedResponse.$collections.attach(collection, on: req.db)
+        }.transform(to: .ok)
+    }
 }

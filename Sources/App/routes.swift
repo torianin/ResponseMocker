@@ -23,8 +23,13 @@ func routes(_ app: Application) throws {
     let responseController = MockedResponseController()
     tokenProtected.get("responses", use: responseController.index)
     tokenProtected.post("responses", use: responseController.create)
+    tokenProtected.post("response", ":responseID", "collection", ":collectionID", use: responseController.updateTag)
     tokenProtected.delete("responses", ":id", use: responseController.delete)
-        
+
+    let collectionController = CollectionController()
+    tokenProtected.get("collections", use: collectionController.index)
+    tokenProtected.post("collections", use: collectionController.create)
+    
     tokenProtected.get("config") { req -> String in
         let user = try req.auth.require(User.self)
         return user.name

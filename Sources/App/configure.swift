@@ -28,6 +28,7 @@ public func configure(_ app: Application) throws {
     app.leaf.cache.isEnabled = false
 
     try routes(app)
+    app.routes.defaultMaxBodySize = "500kb"
 
     setupHostnameAndPort(app)
     try setupTlsConfiguration(app)
@@ -38,6 +39,8 @@ private func setupMigrations(_ app: Application) {
     app.migrations.add(CreateUser())
     app.migrations.add(SeedUser())
     app.migrations.add(CreateUserToken())
+    app.migrations.add(CreateCollection())
+    app.migrations.add(CreateMockedResponseCollection())
 }
 
 private func setupHostnameAndPort(_ app: Application) {

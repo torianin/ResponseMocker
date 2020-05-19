@@ -48,5 +48,11 @@ func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {
             return filteredMockedResponses.first
         })
         .unwrap(or: Abort(.notFound))
-        .map { dateRenderer.render(content: $0.content) }
+        .map {
+            if $0.replaceDates {
+                return dateRenderer.render(content: $0.content)
+            } else {
+                return $0.content
+            }
+        }
 }

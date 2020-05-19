@@ -3,6 +3,22 @@ import { connect } from 'react-redux';
 import { fetchResponses, deleteResponse } from '../actions';
 
 class Response extends React.Component {
+  copyToClipboard = (str) => {
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  };
+
+  handleCopyClick = (id) => {
+    this.copyToClipboard(this.props.response.content);
+  };
+
   handleClick = (id) => {
     this.props.deleteResponse(this.props.response.id);
   };
@@ -17,6 +33,13 @@ class Response extends React.Component {
           {this.props.response.content}
         </td>
         <td>
+          <button
+            onClick={this.handleCopyClick}
+            type="button"
+            className="btn btn-info"
+          >
+            Copy
+          </button>
           <button
             onClick={this.handleClick}
             type="button"

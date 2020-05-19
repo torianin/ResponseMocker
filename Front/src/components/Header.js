@@ -12,7 +12,7 @@ class Header extends React.Component {
     return (
       <nav className="navbar navbar-dark bg-dark">
         <Link className="navbar-brand" to="/">
-          Responce mocker
+          Response mocker
         </Link>
 
         <ul className="navbar-nav">

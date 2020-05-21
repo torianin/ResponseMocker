@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchResponses, deleteResponse } from '../actions';
+import { fetchResponses, editResponse, deleteResponse } from '../actions';
 
 class Response extends React.Component {
   copyToClipboard = (str) => {
@@ -23,27 +23,88 @@ class Response extends React.Component {
     this.props.deleteResponse(this.props.response.id);
   };
 
+  handleIsActiveClick = (id) => {
+    const response = {
+      path: this.props.response.path,
+      content: this.props.response.content,
+      isActive: !this.props.response.isActive,
+      replaceDates: this.props.response.replaceDates,
+    };
+    this.props.editResponse(id, response);
+  };
+
+  handleReplaceDatesClick = (id) => {
+    const response = {
+      path: this.props.response.path,
+      content: this.props.response.content,
+      isActive: this.props.response.isActive,
+      replaceDates: !this.props.response.replaceDates,
+    };
+    this.props.editResponse(id, response);
+  };
+
   render() {
+    let replaceDatesTag;
+    if (this.props.response.replaceDates) {
+      replaceDatesTag = (
+        <span className="badge badge-pill badge-info ml-1">Replace dates</span>
+      );
+    }
+
     return (
-      <tr>
+      <tr className={this.props.response.isActive ? '' : 'text-muted'}>
         <td className="text-truncate" style={{ maxWidth: '300px' }}>
           {this.props.response.path}
+          <br />
+          {this.props.response.isActive ? (
+            <span className="badge badge-pill badge-info ml-1">Active</span>
+          ) : (
+            <span className="badge badge-pill badge-warning ml-1">
+              Disabled
+            </span>
+          )}
+          {replaceDatesTag}
         </td>
-        <td className="text-truncate" style={{ maxWidth: '500px' }}>
+        <td className="text-truncate" style={{ maxWidth: '450px' }}>
           {this.props.response.content}
         </td>
         <td>
+          {this.props.response.isActive ? (
+            <button
+              onClick={() => this.handleIsActiveClick(this.props.response.id)}
+              type="button"
+              className="btn btn-info ml-1"
+            >
+              Disable
+            </button>
+          ) : (
+            <button
+              onClick={() => this.handleIsActiveClick(this.props.response.id)}
+              type="button"
+              className="btn btn-info ml-1"
+            >
+              Activate
+            </button>
+          )}
+
+          <button
+            onClick={() => this.handleReplaceDatesClick(this.props.response.id)}
+            type="button"
+            className="btn btn-info ml-1"
+          >
+            Render dates
+          </button>
           <button
             onClick={this.handleCopyClick}
             type="button"
-            className="btn btn-info"
+            className="btn btn-info ml-1"
           >
             Copy
           </button>
           <button
             onClick={this.handleClick}
             type="button"
-            className="btn btn-danger"
+            className="btn btn-danger ml-1"
           >
             Remove
           </button>
@@ -59,6 +120,8 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, { fetchResponses, deleteResponse })(
-  Response
-);
+export default connect(mapStateToProps, {
+  fetchResponses,
+  editResponse,
+  deleteResponse,
+})(Response);

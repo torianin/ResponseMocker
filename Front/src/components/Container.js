@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Dashboard from './Dashboard';
 import Unauthorized from './Unauthorized';
 import Login from './Login';
+import Tester from './Tester';
 
 class Container extends React.Component {
   render() {
@@ -15,6 +16,10 @@ class Container extends React.Component {
           component={this.props.isSignedIn ? Dashboard : Unauthorized}
         />
         <Route path="/login" exact component={Login} />
+        <Route path="/tester" exact component={Tester} />
+        <footer className="footer fixed-bottom text-center py-2 text-light bg-dark">
+          Torianin 2020 - 0.0.1
+        </footer>
       </div>
     );
   }

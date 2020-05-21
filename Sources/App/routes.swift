@@ -23,7 +23,8 @@ func routes(_ app: Application) throws {
     let responseController = MockedResponseController()
     tokenProtected.get("responses", use: responseController.index)
     tokenProtected.post("responses", use: responseController.create)
-    tokenProtected.post("response", ":responseID", "collection", ":collectionID", use: responseController.updateTag)
+    tokenProtected.put("responses", ":id", use: responseController.update)
+    tokenProtected.post("response", ":responseID", "collection", ":collectionID", use: responseController.updateCollection)
     tokenProtected.delete("responses", ":id", use: responseController.delete)
 
     let collectionController = CollectionController()
@@ -43,7 +44,7 @@ func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {
         .all()
         .map({ mockedResponses -> MockedResponse? in
             let filteredMockedResponses = mockedResponses.filter { mockedResponse -> Bool in
-                return req.url.string.matches(path: mockedResponse.path)
+                return req.url.string.matches(path: mockedResponse.path) && mockedResponse.isActive
             }
             return filteredMockedResponses.first
         })

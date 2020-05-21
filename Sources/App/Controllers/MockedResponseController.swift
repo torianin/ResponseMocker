@@ -25,7 +25,23 @@ struct MockedResponseController {
             .transform(to: .ok)
      }
     
-    func updateTag(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+    func update(req: Request) throws -> EventLoopFuture<MockedResponse> {
+        guard let id = req.parameters.get("id", as: UUID.self) else {
+            throw Abort(.badRequest)
+        }
+        let mockedResponseRequest = try req.content.decode(MockedResponse.self)
+        return MockedResponse.find(id, on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMap { mockedResponse in
+                mockedResponse.path = mockedResponseRequest.path
+                mockedResponse.content = mockedResponseRequest.content
+                mockedResponse.isActive = mockedResponseRequest.isActive
+                mockedResponse.replaceDates = mockedResponseRequest.replaceDates
+                return mockedResponse.save(on: req.db).map { mockedResponse }
+            }
+    }
+    
+    func updateCollection(req: Request) throws -> EventLoopFuture<HTTPStatus> {
         let mockedResponse = MockedResponse.find(req.parameters.get("responseID"), on: req.db)
             .unwrap(or: Abort(.notFound))
         let collection = Collection.find(req.parameters.get("collectionID"), on: req.db)

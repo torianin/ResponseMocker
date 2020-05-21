@@ -15,13 +15,14 @@ final class DateRenderer {
         for range in ranges {
             let template = String(content[range])
             let tokens = template.dropFirst(2).dropLast(2).split(separator: "|")
-            if let timeInterval = Double(tokens[1]),
-                let dateFormat = tokens.last {
-                
+            if let timeInterval = tokens.get(at: 1),
+                let dateFormat = tokens.get(at: 2),
+                let timeIntervalValue = Double(String(timeInterval)) {
+                                
                 let dateFormatter = DateFormatter()
                 dateFormatter.timeZone = TimeZone(identifier: "UTC")
                 dateFormatter.dateFormat = String(dateFormat)
-                let dateString = dateFormatter.string(from: dateProvider.currentDate().addingTimeInterval(timeInterval))
+                let dateString = dateFormatter.string(from: dateProvider.currentDate().addingTimeInterval(timeIntervalValue))
         
                 cleanedContent = cleanedContent.replacingOccurrences(of: template, with: dateString)
             }

@@ -17,12 +17,11 @@ class Tester extends React.Component {
   handleSubmit = async () => {
     event.preventDefault();
     const response = await axiosInstance.get(this.state.path);
-    console.log(response);
     this.setState({ response: response });
   };
 
   renderResponse = () => {
-    if (this.state.response === null) {
+    if (!this.state.response) {
       return;
     }
     return (

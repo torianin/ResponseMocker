@@ -1,3 +1,5 @@
+import { axiosInstance } from '../actions/networking';
+
 const INITIAL_STATE = {
   isSignedIn: localStorage.access_token !== undefined,
   token: localStorage.access_token,
@@ -8,6 +10,9 @@ export default (state = INITIAL_STATE, action) => {
     case 'LOGIN':
       if (action.payload.value) {
         localStorage.setItem('access_token', action.payload.value);
+        axiosInstance.defaults.headers.common = {
+          Authorization: `Bearer ${action.payload.value}`,
+        };
         return { ...state, isSignedIn: true, token: action.payload.value };
       }
       return state;

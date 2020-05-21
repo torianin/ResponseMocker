@@ -16,7 +16,10 @@ class Tester extends React.Component {
 
   handleSubmit = async () => {
     event.preventDefault();
-    const response = await axiosInstance.get(this.state.path);
+    const response = await axiosInstance.get(this.state.path, {
+      transformResponse: [],
+    });
+    console.log(response);
     this.setState({ response: response });
   };
 
@@ -26,7 +29,9 @@ class Tester extends React.Component {
     }
     return (
       <div className="card w-100">
-        <div class="card-header">Status code: {this.state.response.status}</div>
+        <div className="card-header">
+          Status code: {this.state.response.status}
+        </div>
         <div className="card-body">{this.state.response.data}</div>
       </div>
     );

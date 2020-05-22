@@ -53,12 +53,17 @@ private func setupHostnameAndPort(_ app: Application) {
 
 private func setupTlsConfiguration(_ app: Application) throws {
     guard let certPath = Environment.get("CERT_PATH"),
+        let intermediateCertPath = Environment.get("INTERMEDIATE_CERT_PATH"),
         let keyPath = Environment.get("KEY_PATH") else { return }
     
     try app.http.server.configuration.tlsConfiguration = .forServer(
         certificateChain: [
             .certificate(.init(
                 file: certPath,
+                format: .pem
+            )),
+            .certificate(.init(
+                file: intermediateCertPath,
                 format: .pem
             ))
         ],

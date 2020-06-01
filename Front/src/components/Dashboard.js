@@ -7,7 +7,7 @@ import { fetchResponses } from '../actions';
 class Dashboard extends React.Component {
   render() {
     return (
-      <div>
+      <div className = "mb-5">
         <ResponseCreate />
         <ResponsesList />
       </div>

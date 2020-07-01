@@ -22,6 +22,11 @@ class Header extends React.Component {
                   Tester
                 </Link>
               </li>
+              <li>
+                <Link className="nav-link text-light" to="/live">
+                  Live
+                </Link>
+              </li>
             </ul>
           </div>
           <ul className="navbar-nav">

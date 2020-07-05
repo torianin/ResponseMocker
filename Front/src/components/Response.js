@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchResponses, editResponse, deleteResponse } from '../actions';
 
@@ -43,6 +44,12 @@ class Response extends React.Component {
     this.props.editResponse(id, response);
   };
 
+  renderEdit = (id) => {
+    return <Link to={`/responses/edit/${id}`} className="btn btn-info ml-1">
+      Edit
+    </Link> 
+  };
+
   render() {
     let replaceDatesTag;
     if (this.props.response.replaceDates) {
@@ -53,9 +60,12 @@ class Response extends React.Component {
 
     return (
       <tr className={this.props.response.isActive ? '' : 'text-muted'}>
-        <td className="text-truncate" style={{ maxWidth: '300px' }}>
+        <td className="text-truncate" style={{ maxWidth: '700px' }}>
           {this.props.response.path}
           <br />
+          {this.props.response.description ? (
+            <div><small className="text-info">{this.props.response.description}</small><br /></div>
+          ) : ( null )}
           {this.props.response.isActive ? (
             <span className="badge badge-pill badge-info ml-1">Active</span>
           ) : (
@@ -65,10 +75,8 @@ class Response extends React.Component {
           )}
           {replaceDatesTag}
         </td>
-        <td className="text-truncate" style={{ maxWidth: '450px' }}>
-          {this.props.response.content}
-        </td>
         <td>
+          {this.renderEdit(this.props.response.id)}
           {this.props.response.isActive ? (
             <button
               onClick={() => this.handleIsActiveClick(this.props.response.id)}

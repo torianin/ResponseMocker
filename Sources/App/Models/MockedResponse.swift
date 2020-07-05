@@ -25,6 +25,9 @@ final class MockedResponse: Model, Content {
     @Timestamp(key: "updated_at", on: .update)
     var updatedAt: Date?
 
+    @Field(key: "description")
+    var description: String?
+
     @Siblings(through: MockedResponseCollection.self, from: \.$mockedResponse, to: \.$collection)
     var collections: [Collection]
     
@@ -33,11 +36,13 @@ final class MockedResponse: Model, Content {
     init(id: UUID? = nil,
          path: String,
          content: String,
+         description: String?,
          isActive: Bool = true,
          replaceDates: Bool = false) {
         self.id = id
         self.path = path
         self.content = content
+        self.description = description
         self.isActive = isActive
         self.replaceDates = replaceDates
     }
@@ -47,5 +52,6 @@ extension MockedResponse {
     struct Create: Content {
         var path: String
         var content: String
+        var description: String?
     }
 }

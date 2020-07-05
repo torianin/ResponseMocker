@@ -43,6 +43,11 @@ class ResponseCreate extends React.Component {
                 component={this.renderInput}
                 label="Content"
               />
+              <Field
+                name="description"
+                component={this.renderInput}
+                label="Description"
+              />
             </div>
           </div>
           <button type="submit" className="btn btn-primary">

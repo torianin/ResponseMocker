@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
@@ -8,16 +8,17 @@ import thunk from 'redux-thunk';
 import reducers from './reducers';
 import Header from './components/Header';
 import Container from './components/Container';
+import history from './history';
 
 const App = () => {
   return (
     <div>
-      <BrowserRouter>
+      <Router history={history}>
         <div>
           <Header />
           <Container />
         </div>
-      </BrowserRouter>
+      </Router>
     </div>
   );
 };

@@ -10,7 +10,8 @@ struct MockedResponseController {
         let createRequest = try req.content.decode(MockedResponse.Create.self)
         let response = MockedResponse(
             path: createRequest.path,
-            content: createRequest.content
+            content: createRequest.content,
+            description: createRequest.description
         )
         return response.save(on: req.db).map { response }
     }
@@ -37,6 +38,7 @@ struct MockedResponseController {
                 mockedResponse.content = mockedResponseRequest.content
                 mockedResponse.isActive = mockedResponseRequest.isActive
                 mockedResponse.replaceDates = mockedResponseRequest.replaceDates
+                mockedResponse.description = mockedResponseRequest.description
                 return mockedResponse.save(on: req.db).map { mockedResponse }
             }
     }

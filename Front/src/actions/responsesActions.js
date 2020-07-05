@@ -1,4 +1,5 @@
 import { axiosInstance } from './networking';
+import history from '../history';
 
 export const selectResponse = (response) => {
   return {
@@ -32,6 +33,7 @@ export const createResponse = (formValues) => async (dispatch) => {
     type: 'CREATE_RESPONSE',
     payload: response.data,
   });
+  history.push('/');
 };
 
 export const editResponse = (id, formValues) => async (dispatch) => {

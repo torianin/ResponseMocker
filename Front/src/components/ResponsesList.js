@@ -19,7 +19,6 @@ class ResponsesList extends React.Component {
         <thead>
           <tr>
             <th scope="col">Path</th>
-            <th scope="col">Content</th>
             <th scope="col"></th>
           </tr>
         </thead>

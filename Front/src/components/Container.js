@@ -6,6 +6,7 @@ import Unauthorized from './Unauthorized';
 import Login from './Login';
 import Tester from './Tester';
 import Live from './Live';
+import ResponseCreate from './ResponseCreate';
 
 class Container extends React.Component {
   render() {
@@ -17,6 +18,7 @@ class Container extends React.Component {
           component={this.props.isSignedIn ? Dashboard : Unauthorized}
         />
         <Route path="/login" exact component={Login} />
+        <Route path="/responses/create" exact component={ResponseCreate} />
         <Route path="/tester" exact component={Tester} />
         <Route path="/live" exact component={Live} />
         <footer className="footer fixed-bottom text-center py-2 text-light bg-dark">

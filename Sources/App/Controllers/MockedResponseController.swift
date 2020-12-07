@@ -38,7 +38,9 @@ struct MockedResponseController {
                 mockedResponse.content = mockedResponseRequest.content
                 mockedResponse.isActive = mockedResponseRequest.isActive
                 mockedResponse.replaceDates = mockedResponseRequest.replaceDates
-                mockedResponse.description = mockedResponseRequest.description
+                if mockedResponseRequest.description != nil {
+                    mockedResponse.description = mockedResponseRequest.description
+                }
                 return mockedResponse.save(on: req.db).map { mockedResponse }
             }
     }

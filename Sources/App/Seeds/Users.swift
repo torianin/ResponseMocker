@@ -1,5 +1,5 @@
 //
-// let users = [SeedUserModel(name: "ExampleName", password: "ExamplePassword")]
+// let users: [SeedUserModel] = [SeedUserModel(name: "ExampleName", password: "ExamplePassword")]
 //
 
-let users = []
+let users: [SeedUserModel] = []

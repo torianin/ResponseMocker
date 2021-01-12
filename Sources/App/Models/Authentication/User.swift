@@ -41,12 +41,7 @@ extension User: ModelAuthenticatable {
     static let passwordHashKey = \User.$passwordHash
 
     func verify(password: String) throws -> Bool {
-        //   Segmentation fault bug
-        //   https://bugs.swift.org/browse/SR-12424
-        //
-        //   try Bcrypt.verify(password, created: self.passwordHash)
-        //
-        return password == self.passwordHash
+        return try Bcrypt.verify(password, created: self.passwordHash)
     }
 }
 

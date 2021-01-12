@@ -20,7 +20,7 @@ class Container extends React.Component {
         <Route path="/responses/create" exact component={ResponseCreate} />
         <Route path="/tester" exact component={Tester} />
         <footer className="footer fixed-bottom text-center py-2 text-light bg-dark">
-          Torianin 2020 - 0.0.1
+          Torianin 2020 - 0.0.1 ({process.env.NODE_ENV})
         </footer>
       </div>
     );

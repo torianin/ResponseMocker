@@ -3,7 +3,6 @@ import FluentSQLiteDriver
 import Vapor
 import Leaf
 
-// configures your application
 public func configure(_ app: Application) throws {
 
     let fileMiddleware = FileMiddleware(publicDirectory: app.directory.viewsDirectory)
@@ -38,7 +37,7 @@ private func setupMigrations(_ app: Application) {
     app.migrations.add(CreateMockedResponse())
     app.migrations.add(AddDescriptionToMockedResponse())
     app.migrations.add(CreateUser())
-    app.migrations.add(SeedUser())
+    app.migrations.add(SeedUsers())
     app.migrations.add(CreateUserToken())
     app.migrations.add(CreateCollection())
     app.migrations.add(CreateMockedResponseCollection())

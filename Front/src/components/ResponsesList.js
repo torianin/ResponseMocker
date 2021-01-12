@@ -1,8 +1,9 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { _ } from 'lodash';
-import Response from './Response';
-import { fetchResponses } from '../actions';
+import React from "react";
+import { connect } from "react-redux";
+import { _ } from "lodash";
+import Response from "./Response";
+import { fetchResponses } from "../actions";
+import MaterialTable from "material-table";
 
 class ResponsesList extends React.Component {
   componentDidMount() {
@@ -10,25 +11,50 @@ class ResponsesList extends React.Component {
   }
 
   renderResponses() {
+    const columns = [
+      {
+        title: "Path",
+        field: "path",
+        sorting: false,
+        filtering: false,
+        align: 'justify',
+        render: (rowData) => (
+          <Response className="w-100" key={rowData.id} id={rowData.id} />
+        ),
+      }, 
+      {
+        title: "Description",
+        field: "description",
+        searchable: true, 
+        hidden: true,
+      },
+      {
+        title: "Description",
+        field: "isActive",
+        searchable: true, 
+        hidden: true,
+        lookup: { true: 'Active', false: 'Disabled' }, 
+      }
+    ];
+
     return !this.props.responses.length ? (
       <div className="row p-3">
         <h3>No responses</h3>
       </div>
     ) : (
-      <table className="table mt-3 w-100 text-truncate table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Path</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {this.props.responses.map((response) => {
-            return <Response key={response.id} id={response.id} />;
-          })}
-        </tbody>
-      </table>
+      <div className="py-4">
+        <MaterialTable
+          title="Responses"
+          data={this.props.responses}
+          columns={columns}
+          options={{ search: true, paging: false, filtering: true, sorting: false, header: false, showTitle: false }}
+          localization={{
+            body: {
+              emptyDataSourceMessage: "No responses to display",
+            },
+          }}
+        />
+      </div>
     );
   }
 
@@ -43,7 +69,7 @@ const mapStateToProps = (state) => {
     responses: _.orderBy(
       responsesList,
       [(response) => response.createdAt],
-      ['desc']
+      ["desc"]
     ),
   };
 };

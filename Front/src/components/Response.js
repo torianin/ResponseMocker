@@ -60,7 +60,7 @@ class Response extends React.Component {
 
     return (
       <tr className={this.props.response.isActive ? '' : 'text-muted'}>
-        <td className="text-truncate" style={{ maxWidth: '700px' }}>
+        <td className="text-truncate" style={{ minWidth: '600px' }}>
           {this.props.response.path}
           <br />
           {this.props.response.description ? (

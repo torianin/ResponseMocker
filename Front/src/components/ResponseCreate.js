@@ -1,10 +1,12 @@
-import React from 'react';
-import { Field, reduxForm } from 'redux-form';
-import { connect } from 'react-redux';
-import { createResponse } from '../actions';
+import React from "react";
+import { Form, Field } from "react-final-form";
+import { useDispatch, useSelector } from "react-redux";
+import { createResponse } from "../actions";
 
-class ResponseCreate extends React.Component {
-  renderError({ error, touched }) {
+function ResponseCreate(props) {
+  const dispatch = useDispatch();
+
+  const renderError = ({ error, touched }) => {
     if (touched && error) {
       return (
         <p>
@@ -12,65 +14,59 @@ class ResponseCreate extends React.Component {
         </p>
       );
     }
-  }
+  };
 
-  renderInput = ({ input, label, meta }) => {
+  const validate = (values) => {
+    const errors = {};
+    if (!values.path) {
+      errors.path = "Path cannot be an empty";
+    }
+    if (!values.content) {
+      errors.content = "Content cannot be an empty";
+    }
+    return errors;
+  };
+
+  const renderInput = ({ input, label, meta }) => {
     return (
       <div>
         <label htmlFor="content">{label}</label>
         <input className="form-control" {...input} autoComplete="off" />
-        {this.renderError(meta)}
+        {renderError(meta)}
       </div>
     );
   };
 
-  onSubmit = (formValues) => {
-    this.props.createResponse(formValues);
+  const onSubmit = (values) => {
+    dispatch(createResponse(values));
   };
 
-  render() {
-    return (
-      <div className="row p-3">
-        <form
-          className="w-100"
-          onSubmit={this.props.handleSubmit(this.onSubmit)}
-        >
-          <div className="form-group">
+  return (
+    <div className="row p-3">
+      <Form
+        onSubmit={onSubmit}
+        validate={validate}
+        render={({ handleSubmit }) => (
+          <form className="w-100" onSubmit={handleSubmit}>
             <div className="form-group">
-              <Field name="path" component={this.renderInput} label="Path" />
-              <Field
-                name="content"
-                component={this.renderInput}
-                label="Content"
-              />
-              <Field
-                name="description"
-                component={this.renderInput}
-                label="Description"
-              />
+              <div className="form-group">
+                <Field name="path" component={renderInput} label="Path" />
+                <Field name="content" component={renderInput} label="Content" />
+                <Field
+                  name="description"
+                  component={renderInput}
+                  label="Description"
+                />
+              </div>
             </div>
-          </div>
-          <button type="submit" className="btn btn-primary">
-            Submit
-          </button>
-        </form>
-      </div>
-    );
-  }
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </form>
+        )}
+      />
+    </div>
+  );
 }
 
-const validate = (formValues) => {
-  const errors = {};
-  if (!formValues.path) {
-    errors.path = 'Path cannot be an empty';
-  }
-  if (!formValues.content) {
-    errors.content = 'Content cannot be an empty';
-  }
-  return errors;
-};
-
-const formWrapped = reduxForm({ form: 'responseCreate', validate })(
-  ResponseCreate
-);
-export default connect(null, { createResponse })(formWrapped);
+export default ResponseCreate;

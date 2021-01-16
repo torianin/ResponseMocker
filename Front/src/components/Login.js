@@ -1,11 +1,14 @@
-import React from 'react';
-import { Field, reduxForm } from 'redux-form';
-import { connect } from 'react-redux';
-import { login, signIn, signOut } from '../actions';
-import { Redirect } from 'react-router-dom';
+import React from "react";
+import { Form, Field } from "react-final-form";
+import { useDispatch, useSelector } from "react-redux";
+import { login, signIn, signOut } from "../actions";
+import { Redirect } from "react-router-dom";
 
-class Login extends React.Component {
-  renderError({ error, touched }) {
+function Login() {
+  const dispatch = useDispatch();
+  const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+
+  const renderError = ({ error, touched }) => {
     if (touched && error) {
       return (
         <p>
@@ -13,72 +16,68 @@ class Login extends React.Component {
         </p>
       );
     }
-  }
+  };
 
-  renderInput = ({ input, label, meta, type }) => {
+  const validate = (values) => {
+    const errors = {};
+    if (!values.login) {
+      errors.path = "Login cannot be an empty";
+    }
+    if (!values.password) {
+      errors.content = "Password cannot be an empty";
+    }
+    return errors;
+  };
+
+  const renderInput = ({ input, label, meta, type }) => {
     return (
       <div>
         <label htmlFor="content">{label}</label>
         <input className="form-control" type={type} {...input} />
-        {this.renderError(meta)}
+        {renderError(meta)}
       </div>
     );
   };
 
-  onSubmit = (formValues) => {
-    this.props.login(formValues);
+  const onSubmit = (values) => {
+    dispatch(login(values));
   };
 
-  render() {
-    if (this.props.isSignedIn) {
-      return <Redirect to="/" />;
-    } else {
-      return (
-        <div className="row p-3">
-          <form
-            className="w-100"
-            onSubmit={this.props.handleSubmit(this.onSubmit)}
-          >
-            <div className="form-group">
+  if (isSignedIn) {
+    return <Redirect to="/" />;
+  } else {
+    return (
+      <div className="row p-3">
+        <Form
+          onSubmit={onSubmit}
+          validate={validate}
+          render={({ handleSubmit }) => (
+            <form className="w-100" onSubmit={handleSubmit}>
               <div className="form-group">
-                <Field
-                  name="login"
-                  component={this.renderInput}
-                  label="Login"
-                  type="text"
-                />
-                <Field
-                  name="password"
-                  component={this.renderInput}
-                  label="Password"
-                  type="password"
-                />
+                <div className="form-group">
+                  <Field
+                    name="login"
+                    component={renderInput}
+                    label="Login"
+                    type="text"
+                  />
+                  <Field
+                    name="password"
+                    component={renderInput}
+                    label="Password"
+                    type="password"
+                  />
+                </div>
               </div>
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Login
-            </button>
-          </form>
-        </div>
-      );
-    }
+              <button type="submit" className="btn btn-primary">
+                Login
+              </button>
+            </form>
+          )}
+        />
+      </div>
+    );
   }
 }
 
-const validate = (formValues) => {
-  const errors = {};
-  if (!formValues.login) {
-    errors.path = 'Login cannot be an empty';
-  }
-  if (!formValues.password) {
-    errors.content = 'Password cannot be an empty';
-  }
-  return errors;
-};
-
-const mapStateToProps = (state) => {
-  return { isSignedIn: state.auth.isSignedIn };
-};
-
-const formWrapped = reduxForm({ form: 'login', validate })(Login);
-export default connect(mapStateToProps, { login, signOut })(formWrapped);
+export default Login;

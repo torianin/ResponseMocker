@@ -1,7 +1,8 @@
 import React from 'react';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchResponses, editResponse, deleteResponse } from '../actions';
+import { fetchResponses, editResponse } from '../actions';
 
 class Response extends React.Component {
   copyToClipboard = (str) => {
@@ -18,10 +19,6 @@ class Response extends React.Component {
 
   handleCopyClick = (id) => {
     this.copyToClipboard(this.props.response.content);
-  };
-
-  handleClick = (id) => {
-    this.props.deleteResponse(this.props.response.id);
   };
 
   handleIsActiveClick = (id) => {
@@ -45,7 +42,7 @@ class Response extends React.Component {
   };
 
   renderEdit = (id) => {
-    return <Link to={`/responses/edit/${id}`} className="btn btn-info ml-1">
+    return <Link to={`/responses/edit/${id}`} className="btn btn-info ml-1 btn-sm">
       Edit
     </Link> 
   };
@@ -58,14 +55,19 @@ class Response extends React.Component {
       );
     }
 
+    let createdAt = new Date(this.props.response.createdAt)
+    let createdAtString = moment(createdAt).format('DD/MM/YYYY')
     return (
-      <tr className={this.props.response.isActive ? '' : 'text-muted'}>
-        <td className="text-truncate" style={{ minWidth: '600px', maxWidth: '600px' }}>
+      <div className={this.props.response.isActive ? 'row' : 'row text-muted'}>
+        <div className="text-truncate col-8">
           {this.props.response.path}
           <br />
           {this.props.response.description ? (
             <div><small className="text-info">{this.props.response.description}</small><br /></div>
           ) : ( null )}
+          <span className="badge badge-pill badge-info ml-1">
+              📅 {createdAtString}
+          </span>
           {this.props.response.isActive ? (
             <span className="badge badge-pill badge-info ml-1">Active</span>
           ) : (
@@ -74,50 +76,42 @@ class Response extends React.Component {
             </span>
           )}
           {replaceDatesTag}
-        </td>
-        <td>
-          {this.renderEdit(this.props.response.id)}
-          {this.props.response.isActive ? (
+          </div>
+          <div className="col-4 d-flex align-items-center justify-content-end">
+            {this.renderEdit(this.props.response.id)}
+            {this.props.response.isActive ? (
+              <button
+                onClick={() => this.handleIsActiveClick(this.props.response.id)}
+                type="button"
+                className="btn btn-info ml-1 btn-sm"
+              >
+                Disable
+              </button>
+            ) : (
+              <button
+                onClick={() => this.handleIsActiveClick(this.props.response.id)}
+                type="button"
+                className="btn btn-info ml-1 btn-sm"
+              >
+                Activate
+              </button>
+            )}
             <button
-              onClick={() => this.handleIsActiveClick(this.props.response.id)}
+              onClick={() => this.handleReplaceDatesClick(this.props.response.id)}
               type="button"
-              className="btn btn-info ml-1"
+              className="btn btn-info ml-1 btn-sm"
             >
-              Disable
+              Render dates
             </button>
-          ) : (
             <button
-              onClick={() => this.handleIsActiveClick(this.props.response.id)}
+              onClick={this.handleCopyClick}
               type="button"
-              className="btn btn-info ml-1"
+              className="btn btn-info ml-1 btn-sm"
             >
-              Activate
+              Copy
             </button>
-          )}
-
-          <button
-            onClick={() => this.handleReplaceDatesClick(this.props.response.id)}
-            type="button"
-            className="btn btn-info ml-1"
-          >
-            Render dates
-          </button>
-          <button
-            onClick={this.handleCopyClick}
-            type="button"
-            className="btn btn-info ml-1"
-          >
-            Copy
-          </button>
-          <button
-            onClick={this.handleClick}
-            type="button"
-            className="btn btn-danger ml-1"
-          >
-            Remove
-          </button>
-        </td>
-      </tr>
+        </div>
+      </div>
     );
   }
 }
@@ -131,5 +125,4 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
   fetchResponses,
   editResponse,
-  deleteResponse,
 })(Response);

@@ -2,11 +2,13 @@ import Fluent
 import Vapor
 import Leaf
 
+var clients: [WebSocket] = []
+
 func routes(_ app: Application) throws {
     app.get { req in
         req.view.render("index")
     }
-
+    setupLiveData(app)
     let passwordProtected = app.grouped(User.authenticator())
     passwordProtected.post("login") { req -> EventLoopFuture<UserToken> in
         let user = try req.auth.require(User.self)
@@ -37,9 +39,18 @@ func routes(_ app: Application) throws {
     }
 }
 
+func setupLiveData(_ app: Application) {
+    app.webSocket("live") { req, ws in
+        clients.append(ws)
+    }
+}
+
 func getMockedResponseWithPath(req: Request) throws -> EventLoopFuture<String> {
     let dateRenderer = DateRenderer()
     req.logger.info("\(req.url.string)")
+    clients.forEach { client in
+        client.send("\(req.url.string)")
+    }
     return MockedResponse.query(on: req.db)
         .all()
         .map({ mockedResponses -> MockedResponse? in

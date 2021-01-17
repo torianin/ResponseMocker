@@ -2,18 +2,23 @@ import Fluent
 import Vapor
 
 struct MockedResponseController {
-    func index(req: Request) throws -> EventLoopFuture<[MockedResponse]> {
-        return MockedResponse.query(on: req.db).sort(\.$createdAt, .descending).all()
+    func index(req: Request) throws -> EventLoopFuture<[MockedResponse.Get]> {
+        return MockedResponse.query(on: req.db).with(\.$user).sort(\.$createdAt, .descending).all().flatMapThrowing { mockedResponses in
+            mockedResponses.map { mockedResponse in
+                MockedResponse.Get(mockedResponse: mockedResponse)
+            }
+        }
     }
 
-    func create(req: Request) throws -> EventLoopFuture<MockedResponse> {
+    func create(req: Request) throws -> EventLoopFuture<MockedResponse.Get> {
         let createRequest = try req.content.decode(MockedResponse.Create.self)
         let response = MockedResponse(
             path: createRequest.path,
             content: createRequest.content,
-            description: createRequest.description
+            description: createRequest.description,
+            userId: try req.auth.require(User.self).id
         )
-        return response.save(on: req.db).map { response }
+        return response.save(on: req.db).map { MockedResponse.Get(mockedResponse: response) }
     }
 
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
@@ -26,11 +31,11 @@ struct MockedResponseController {
             .transform(to: .ok)
      }
     
-    func update(req: Request) throws -> EventLoopFuture<MockedResponse> {
+    func update(req: Request) throws -> EventLoopFuture<MockedResponse.Get> {
         guard let id = req.parameters.get("id", as: UUID.self) else {
             throw Abort(.badRequest)
         }
-        let mockedResponseRequest = try req.content.decode(MockedResponse.self)
+        let mockedResponseRequest = try req.content.decode(MockedResponse.Update.self)
         return MockedResponse.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMap { mockedResponse in
@@ -41,7 +46,14 @@ struct MockedResponseController {
                 if mockedResponseRequest.description != nil {
                     mockedResponse.description = mockedResponseRequest.description
                 }
-                return mockedResponse.save(on: req.db).map { mockedResponse }
+                return mockedResponse.update(on: req.db).flatMap {
+                    MockedResponse.query(on: req.db)
+                        .filter(\.$id == id)
+                        .with(\.$user)
+                        .first()
+                        .unwrap(or: Abort(.notFound))
+                        .map { MockedResponse.Get(mockedResponse: $0) }
+                }
             }
     }
     

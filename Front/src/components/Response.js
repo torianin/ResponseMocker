@@ -55,6 +55,13 @@ class Response extends React.Component {
       );
     }
 
+    let createdByTag;
+    if (this.props.response.createdBy) {
+      createdByTag = (
+        <span className="badge badge-pill badge-info ml-1">👤{this.props.response.createdBy}</span>
+      );
+    }
+
     let createdAt = new Date(this.props.response.createdAt)
     let createdAtString = moment(createdAt).format('DD/MM/YYYY')
     return (
@@ -68,6 +75,7 @@ class Response extends React.Component {
           <span className="badge badge-pill badge-info ml-1">
               📅 {createdAtString}
           </span>
+          {createdByTag}
           {this.props.response.isActive ? (
             <span className="badge badge-pill badge-info ml-1">Active</span>
           ) : (

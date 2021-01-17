@@ -36,6 +36,7 @@ public func configure(_ app: Application) throws {
 private func setupMigrations(_ app: Application) {
     app.migrations.add(CreateMockedResponse())
     app.migrations.add(AddDescriptionToMockedResponse())
+    app.migrations.add(AddUserToMockedResponse())
     app.migrations.add(CreateUser())
     app.migrations.add(SeedUsers())
     app.migrations.add(CreateUserToken())

@@ -17,7 +17,7 @@ let package = Package(
     targets: [
         .target(name: "App", dependencies: [
             .product(name: "Fluent", package: "fluent"),
-            .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+            .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
             .product(name: "Vapor", package: "vapor"),
             .product(name: "Leaf", package: "leaf")
         ]),

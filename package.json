@@ -2,7 +2,7 @@
   "name": "response-mocker",
   "version": "1.0.0",
   "description": "",
-  "main": "src/App.js",
+  "main": "Front/src/App.js",
   "scripts": {
     "dev": "BASE_SOCKET_URL=ws://0.0.0.0:8080/ BASE_URL=http://0.0.0.0:8080/ parcel src/index.html --host 0.0.0.0 --port 8081",
     "dist": "parcel build src/index.html --out-dir ../Resources/Views --out-file index.leaf"

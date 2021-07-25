@@ -1,5 +1,5 @@
 import Fluent
-import FluentSQLiteDriver
+import FluentPostgresDriver
 import Vapor
 import Leaf
 

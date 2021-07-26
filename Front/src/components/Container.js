@@ -24,7 +24,7 @@ class Container extends React.Component {
         <Route path="/tester" exact component={Tester} />
         <Route path="/live" exact component={Live} />
         <footer className="footer fixed-bottom text-center py-2 text-light bg-dark">
-          Torianin 2021 - 0.1.0 ({process.env.NODE_ENV})
+          Torianin 2021 - 0.1.1 ({process.env.NODE_ENV})
         </footer>
       </div>
     );

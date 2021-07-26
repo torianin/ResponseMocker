@@ -28,19 +28,6 @@ public func configure(_ app: Application) throws {
       app.databases.use(.postgres(
         configuration: config
       ), as: .psql)
-    } else {
-      app.databases.use(
-        .postgres(
-          hostname: Environment.get("DATABASE_HOST") ??
-            "localhost",
-          port: databasePort,
-          username: Environment.get("DATABASE_USERNAME") ??
-            "vapor_username",
-          password: Environment.get("DATABASE_PASSWORD") ??
-            "vapor_password",
-          database: Environment.get("DATABASE_NAME") ??
-            databaseName),
-        as: .psql)
     }
     setupMigrations(app)
 
